@@ -1,3 +1,5 @@
+#include <NewPing.h>
+
 #define sensor_f_echo A1
 #define sensor_f_trig A2
 
