@@ -130,6 +130,7 @@ void setup() {
   
 }
 int pointer=0;
+int angleoff=0;
 
 void loop() {
   int df=sonar_forward.ping_cm();
@@ -137,18 +138,15 @@ void loop() {
   int dl=sonar_left.ping_cm();
 
   if(dr<rd){
-    left(100);
-    delay(dt);
+    left(100,90-angleoff);
   }
   else if(dl<ld){
-    right(100);
-    delay(dt);
+    right(100,90+angleoff);
   }
   else if(df<fd){
     int flag1=0;
     int flag2=0;
     int firstIter=1;
-    int angleoff=0;
     while(df<fd){
       df=sonar_forward.ping_cm();
       dr=sonar_right.ping_cm();
@@ -187,5 +185,6 @@ void loop() {
   }
   else{
     forward(255,5);
+    angleoff=0;
   }
 }
