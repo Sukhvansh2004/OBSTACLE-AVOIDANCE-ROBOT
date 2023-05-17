@@ -23,7 +23,7 @@ int ld=15;
 int fd=20;
 int dt=100;
 
-int MAX DISTANCE=200;
+int MAX_DISTANCE=200;
 int offset_x=0;
 int offset_y=100;
 
@@ -43,7 +43,7 @@ void forward(){
 
 }
 
-void forward(){
+void backward(){
   analogWrite(ENA,255);
   analogWrite(ENB,255);
   
@@ -105,34 +105,43 @@ void loop() {
   int dl=sonar_left.ping_cm();
 
   if(dr<rd){
+    if(pointer==0){
+      backward();
+      delay(dt*5);
+      stationary();
+      pointer=1;
+    }
     left();
     delay(dt);
   }
   else if(dl<ld){
+    if(pointer==0){
+      backward();
+      delay(dt*5);
+      stationary();
+      pointer=1;
+    }
     right();
     delay(dt);
   }
   else if(df<fd){
-    int flag=0
-    while(df>fd){
+    while(df<fd){
       df=sonar_forward.ping_cm();
       dr=sonar_right.ping_cm();
       dl=sonar_left.ping_cm();
-      if(flag==0){
-        if(dl>dr){
-          left()
-          delay(dt)
-        }
-        else{
-          right()
-          delay(dt)
-          flag=1
-        }
+      if(dl>dr){
+        left();
+        delay(dt);
       }
       else{
-        right()
-        delay(dt)
+        right();
+        delay(dt);
       }
     }
+  }
+  else{
+    pointer=0;
+    forward();
+    delay(dt);
   }
 }
