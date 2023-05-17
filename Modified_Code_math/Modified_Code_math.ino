@@ -16,7 +16,7 @@
 #define IN_A_2 5
 
 #define IN_B_1 6
-#define IN_B_2 4
+#define IN_B_2 7
 
 int rd=15;
 int ld=15;
