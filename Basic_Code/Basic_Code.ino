@@ -9,13 +9,13 @@
 #define sensor_l_echo A5
 #define sensor_l_trig A6
 
-#define ENA 10
-#define ENB 3
+#define ENA 11
+#define ENB 6
 
-#define IN_A_1 4
-#define IN_A_2 5
+#define IN_A_1 10
+#define IN_A_2 9
 
-#define IN_B_1 6
+#define IN_B_1 8
 #define IN_B_2 7
 
 int rd=15;
@@ -32,8 +32,8 @@ NewPing sonar_right(sensor_r_trig, sensor_r_echo, MAX_DISTANCE);
 NewPing sonar_forward(sensor_f_trig, sensor_f_echo, MAX_DISTANCE);
 
 void forward(){
-  analogWrite(ENA,255);
-  analogWrite(ENB,255);
+  analogWrite(ENA,100);
+  analogWrite(ENB,100);
   
   digitalWrite(IN_A_1,HIGH);
   digitalWrite(IN_A_2,LOW);
@@ -44,8 +44,8 @@ void forward(){
 }
 
 void backward(){
-  analogWrite(ENA,255);
-  analogWrite(ENB,255);
+  analogWrite(ENA,100);
+  analogWrite(ENB,100);
   
   digitalWrite(IN_A_1,LOW);
   digitalWrite(IN_A_2,HIGH);
@@ -125,17 +125,19 @@ void loop() {
     delay(dt);
   }
   else if(df<fd){
+    bool firstIter=true;
     while(df<fd){
       df=sonar_forward.ping_cm();
       dr=sonar_right.ping_cm();
       dl=sonar_left.ping_cm();
-      if(dl>dr){
+      if(dl>dr || firstIter==false){
         left();
         delay(dt);
       }
       else{
         right();
         delay(dt);
+        firstIter=false;
       }
     }
   }
