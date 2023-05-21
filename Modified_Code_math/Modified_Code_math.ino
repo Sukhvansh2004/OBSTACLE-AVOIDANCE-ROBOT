@@ -192,92 +192,163 @@ void update_dir(int dir){
 }
 
 bool traceback(){
-  if(state==2 || state==3){
-    if(offy>15){
-      if(state==2){
-        update_dir(1);
-      }
-      else{
-        update_dir(2);
-      }
+  if(offy>15 || offy<-15){
+    if(offy>0){
+      change_to_dir(1);
+      return true;
     }
-    else if(offy<-15){
-      if(state==2){
-        update_dir(2);
-      }
-      else{
-        update_dir(1);
-      }
+    else{
+      change_to_dir(4);
+      return true;
     }
+  }
+  else if(offx>15 || offx<-15){
+    if(offx>0){
+      change_to_dir(3);
+      return true;
+    }
+    else{
+      change_to_dir(2);
+      return true;
+    }
+  }
+  return false;
+}
+
+bool runner=true;
+
+void change_to_dir(int dir){
+  if(dir==1){
+    if(state==1){
+      return;
+    }
+    else if(state==2){
+      left(255,90);
+    }
+    else if(state==3){
+      right(255,90);
+    }
+    else{
+      right(255,180);
+    }
+    state=1;
+  }
+  if(dir==2){
+    if(state==1){
+      right(255,90);
+    }
+    else if(state==2){
+      return;
+    }
+    else if(state==3){
+      right(255,180);
+    }
+    else{
+      left(255,90);
+    }
+    state=2;
+  }
+  if(dir==3){
+    if(state==1){
+      left(255,90);
+    }
+    else if(state==2){
+      left(255,180);
+    }
+    else if(state==3){
+      return;
+    }
+    else{
+      right(255,90);
+    }
+    state=3;
+  }
+  if(dir==4){
+    if(state==1){
+      right(255,180);
+    }
+    else if(state==2){
+      right(255,90);
+    }
+    else if(state==3){
+      left(255,90);
+    }
+    else{
+      return;
+    }
+    state=4;
   }
 }
 
 void loop() {
-  int df=sonar_forward.ping_cm();
-  int dr=sonar_right.ping_cm();
-  int dl=sonar_left.ping_cm();
-
-  if(dr<rd){
-    left(255,90-angleoff);
-    dir=1;
-  }
-  else if(dl<ld){
-    right(255,90+angleoff);
-    dir=2;
-  }
-  else if(df<fd){
-    backward(255,10);
-    update_dir(3);
-    dist_update(10);
-    update_dir(3);
-    int flag1=0;
-    int flag2=0;
-    int firstIter=1;
-    while(df<(fd+15)){
-      df=sonar_forward.ping_cm();
-      dr=sonar_right.ping_cm();
-      dl=sonar_left.ping_cm();
-      if(firstIter){
-        if(dl>dr){
-          left(255);
-          delay(dt);
-          angleoff=angleoff+omega(100)*dt;
-          flag1=1;
-          if(flag2==1){
-            firstIter=0;
-            flag2=0;
+  while(runner){
+    int df=sonar_forward.ping_cm();
+    int dr=sonar_right.ping_cm();
+    int dl=sonar_left.ping_cm();
+  
+    if(dr<rd){
+      left(255,90-angleoff);
+      dir=1;
+    }
+    else if(dl<ld){
+      right(255,90+angleoff);
+      dir=2;
+    }
+    else if(df<fd){
+      backward(255,10);
+      update_dir(3);
+      dist_update(10);
+      update_dir(3);
+      int flag1=0;
+      int flag2=0;
+      int firstIter=1;
+      while(df<(fd+15)){
+        df=sonar_forward.ping_cm();
+        dr=sonar_right.ping_cm();
+        dl=sonar_left.ping_cm();
+        if(firstIter){
+          if(dl>dr){
+            left(255);
+            delay(dt);
+            angleoff=angleoff+omega(100)*dt;
+            flag1=1;
+            if(flag2==1){
+              firstIter=0;
+              flag2=0;
+            }
+            dir=1;
           }
-          dir=1;
+          else{
+            right(255);
+            delay(dt);
+            angleoff=angleoff-omega(100)*dt;
+            flag2=1;
+            if(flag1==1){
+              firstIter=0;
+              flag1=0;
+            }
+            dir=2;
+          }
         }
         else{
-          right(255);
-          delay(dt);
-          angleoff=angleoff-omega(100)*dt;
-          flag2=1;
           if(flag1==1){
-            firstIter=0;
-            flag1=0;
+            left(255,90-angleoff);
+            dir=1;
           }
-          dir=2;
-        }
-      }
-      else{
-        if(flag1==1){
-          left(255,90-angleoff);
-          dir=1;
-        }
-        else{
-          right(255,90+angleoff);
-          dir=2;
+          else{
+            right(255,90+angleoff);
+            dir=2;
+          }
         }
       }
     }
-  }
-  else{
-    update_dir(dir);
-    dir=0;
-    forward(255,10);
-    dist_update(10);
-    angleoff=0;
+    else{
+      update_dir(dir);
+      dir=0;
+      forward(255,10);
+      dist_update(10);
+      angleoff=0;
+      runner=traceback();
+    }
   }
 }
