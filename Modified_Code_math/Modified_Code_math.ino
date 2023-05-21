@@ -9,13 +9,13 @@
 #define sensor_l_echo A5
 #define sensor_l_trig A6
 
-#define ENA 10
-#define ENB 3
+#define ENA 11
+#define ENB 6
 
-#define IN_A_1 4
-#define IN_A_2 5
+#define IN_A_1 10
+#define IN_A_2 9
 
-#define IN_B_1 6
+#define IN_B_1 8
 #define IN_B_2 7
 
 int rd=15;
@@ -26,6 +26,8 @@ int dt=100;
 int MAX_DISTANCE=200;
 int offset_x=0;
 int offset_y=100;
+
+float ratio=242/255;
 
 NewPing sonar_left(sensor_l_trig, sensor_l_echo, MAX_DISTANCE);
 NewPing sonar_right(sensor_r_trig, sensor_r_echo, MAX_DISTANCE);
@@ -48,8 +50,8 @@ void stationary(){
   digitalWrite(IN_B_2,LOW);
 }
 
-void forward(int voltage,int distance=0){
-  analogWrite(ENA,voltage);
+void backward(int voltage,int distance=0){
+  analogWrite(ENA,ratio*voltage);
   analogWrite(ENB,voltage);
   int t=distance/vel(voltage);
   
@@ -65,8 +67,8 @@ void forward(int voltage,int distance=0){
   }
 }
 
-void backward(int voltage,int distance=0){
-  analogWrite(ENA,voltage);
+void forward(int voltage,int distance=0){
+  analogWrite(ENA,ratio*voltage);
   analogWrite(ENB,voltage);
   int t=distance/vel(voltage);
   
@@ -82,9 +84,9 @@ void backward(int voltage,int distance=0){
   }
 }
 
-void left(int voltage,int angle=0){
-  analogWrite(ENA,100);
-  analogWrite(ENB,100);
+void right(int voltage,int angle=0){
+  analogWrite(ENA,ratio*voltage);
+  analogWrite(ENB,ratio*voltage);
   int t=angle/omega(voltage);
   
   digitalWrite(IN_A_1,HIGH);
@@ -100,9 +102,9 @@ void left(int voltage,int angle=0){
   
 }
 
-void right(int voltage,int angle=0){
-  analogWrite(ENA,100);
-  analogWrite(ENB,100);
+void left(int voltage,int angle=0){
+  analogWrite(ENA,ratio*voltage);
+  analogWrite(ENB,voltage);
   int t=angle/omega(voltage);
   
   digitalWrite(IN_A_1,LOW);
@@ -129,8 +131,86 @@ void setup() {
   pinMode(IN_B_2,OUTPUT);
   
 }
-int pointer=0;
+
+int offx=100;
+int offy=100;
+
+int state=1;
+int dir=0;
 int angleoff=0;
+
+void dist_update(int distance){
+  if (state==1){
+    offy=offy-distance;
+  }
+  else if(state==2){
+    offx=offx+distance;
+  }
+  else if(state==3){
+    offx=offx-distance;
+  }
+  else{
+    offy=offy+distance;
+  }
+}
+
+void update_dir(int dir){
+  if (dir==0){
+    return;
+  }
+  else if(dir==1){
+    if (state==1){
+      state=3;
+    }
+    else if(state==2){
+      state=1;
+    }
+    else if(state==3){
+      state=4;
+    }
+    else if(state==4){
+      state=2;
+    }
+  }
+  else if(dir==2){
+    if (state==1){
+      state=2;
+    }
+    else if(state==2){
+      state=4;
+    }
+    else if(state==3){
+      state=1;
+    }
+    else if(state==4){
+      state=3;
+    }
+  }
+  else if(dir=3){
+    state=5-state; 
+  }
+}
+
+bool traceback(){
+  if(state==2 || state==3){
+    if(offy>15){
+      if(state==2){
+        update_dir(1);
+      }
+      else{
+        update_dir(2);
+      }
+    }
+    else if(offy<-15){
+      if(state==2){
+        update_dir(2);
+      }
+      else{
+        update_dir(1);
+      }
+    }
+  }
+}
 
 void loop() {
   int df=sonar_forward.ping_cm();
@@ -138,22 +218,28 @@ void loop() {
   int dl=sonar_left.ping_cm();
 
   if(dr<rd){
-    left(100,90-angleoff);
+    left(255,90-angleoff);
+    dir=1;
   }
   else if(dl<ld){
-    right(100,90+angleoff);
+    right(255,90+angleoff);
+    dir=2;
   }
   else if(df<fd){
+    backward(255,10);
+    update_dir(3);
+    dist_update(10);
+    update_dir(3);
     int flag1=0;
     int flag2=0;
     int firstIter=1;
-    while(df<fd){
+    while(df<(fd+15)){
       df=sonar_forward.ping_cm();
       dr=sonar_right.ping_cm();
       dl=sonar_left.ping_cm();
       if(firstIter){
         if(dl>dr){
-          left(100);
+          left(255);
           delay(dt);
           angleoff=angleoff+omega(100)*dt;
           flag1=1;
@@ -161,9 +247,10 @@ void loop() {
             firstIter=0;
             flag2=0;
           }
+          dir=1;
         }
         else{
-          right(100);
+          right(255);
           delay(dt);
           angleoff=angleoff-omega(100)*dt;
           flag2=1;
@@ -171,20 +258,26 @@ void loop() {
             firstIter=0;
             flag1=0;
           }
+          dir=2;
         }
       }
       else{
         if(flag1==1){
-          left(100,90-angleoff);
+          left(255,90-angleoff);
+          dir=1;
         }
         else{
-          right(100,90+angleoff);
+          right(255,90+angleoff);
+          dir=2;
         }
       }
     }
   }
   else{
-    forward(255,5);
+    update_dir(dir);
+    dir=0;
+    forward(255,10);
+    dist_update(10);
     angleoff=0;
   }
 }
