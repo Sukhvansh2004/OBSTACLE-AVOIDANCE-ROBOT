@@ -7,7 +7,7 @@
 #define sensor_r_trig A4
 
 #define sensor_l_echo A5
-#define sensor_l_trig A6
+#define sensor_l_trig A0
 
 #define ENA 11
 #define ENB 6
@@ -21,24 +21,24 @@
 int rd=15;
 int ld=15;
 int fd=20;
-int dt=100;
+int dt=10;
 
 int MAX_DISTANCE=200;
 int offset_x=0;
 int offset_y=100;
 
-float ratio=242/255;
+float ratio=float(242)/float(255);
 
 NewPing sonar_left(sensor_l_trig, sensor_l_echo, MAX_DISTANCE);
 NewPing sonar_right(sensor_r_trig, sensor_r_echo, MAX_DISTANCE);
 NewPing sonar_forward(sensor_f_trig, sensor_f_echo, MAX_DISTANCE);
 
-int vel(int reading){
-  return reading; //mathematical equation converting the input voltage to speed
+float vel(int reading){
+  return 28.99;
 }
 
-int omega(int reading){
-  return reading; //mathematical equation converting input voltage to angular velocity
+float omega(int reading){
+  return 105.07;
 }
 
 void stationary(){
@@ -295,7 +295,7 @@ void loop() {
       dir=2;
     }
     else if(df<fd){
-      backward(255,10);
+      backward(255,7);
       update_dir(3);
       dist_update(10);
       update_dir(3);
