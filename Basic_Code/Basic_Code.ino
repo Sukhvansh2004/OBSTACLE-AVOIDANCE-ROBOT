@@ -27,13 +27,15 @@ int MAX_DISTANCE=200;
 int offset_x=0;
 int offset_y=100;
 
+int vel=255;
+
 NewPing sonar_left(sensor_l_trig, sensor_l_echo, MAX_DISTANCE);
 NewPing sonar_right(sensor_r_trig, sensor_r_echo, MAX_DISTANCE);
 NewPing sonar_forward(sensor_f_trig, sensor_f_echo, MAX_DISTANCE);
 
-void forward(){
-  analogWrite(ENA,100);
-  analogWrite(ENB,100);
+void backward(){
+  analogWrite(ENA,(242/255)*vel);
+  analogWrite(ENB,vel);
   
   digitalWrite(IN_A_1,HIGH);
   digitalWrite(IN_A_2,LOW);
@@ -43,9 +45,9 @@ void forward(){
 
 }
 
-void backward(){
-  analogWrite(ENA,100);
-  analogWrite(ENB,100);
+void forward(){
+  analogWrite(ENA,(242*255)*vel);
+  analogWrite(ENB,vel);
   
   digitalWrite(IN_A_1,LOW);
   digitalWrite(IN_A_2,HIGH);
@@ -55,9 +57,9 @@ void backward(){
 
 }
 
-void left(){
-  analogWrite(ENA,100);
-  analogWrite(ENB,100);
+void right(){
+  analogWrite(ENA,(242/255)*vel);
+  analogWrite(ENB,vel);
   
   digitalWrite(IN_A_1,HIGH);
   digitalWrite(IN_A_2,LOW);
@@ -66,9 +68,9 @@ void left(){
   digitalWrite(IN_B_2,HIGH);
 }
 
-void right(){
-  analogWrite(ENA,100);
-  analogWrite(ENB,100);
+void left(){
+  analogWrite(ENA,(242/255)*vel);
+  analogWrite(ENB,vel);
   
   digitalWrite(IN_A_1,LOW);
   digitalWrite(IN_A_2,HIGH);
@@ -99,6 +101,7 @@ void setup() {
 }
 int pointer=0;
 
+//distances to changed and double flag of distances to be used...
 void loop() {
   int df=sonar_forward.ping_cm();
   int dr=sonar_right.ping_cm();
