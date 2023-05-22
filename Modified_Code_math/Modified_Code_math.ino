@@ -34,11 +34,11 @@ NewPing sonar_right(sensor_r_trig, sensor_r_echo, MAX_DISTANCE);
 NewPing sonar_forward(sensor_f_trig, sensor_f_echo, MAX_DISTANCE);
 
 float vel(int reading){
-  return 28.99;
+  return 28.99*(0.001);
 }
 
 float omega(int reading){
-  return 105.07;
+  return 105.07*(0.001);
 }
 
 void stationary(){
