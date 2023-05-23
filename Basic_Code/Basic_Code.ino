@@ -1,13 +1,13 @@
 #include <NewPing.h>
 
-#define sensor_f_echo A1
-#define sensor_f_trig A2
+#define sensor_f_echo A2
+#define sensor_f_trig A3
 
-#define sensor_r_echo A3
-#define sensor_r_trig A4
+#define sensor_r_echo A0
+#define sensor_r_trig A1
 
-#define sensor_l_echo A5
-#define sensor_l_trig A6
+#define sensor_l_echo A4
+#define sensor_l_trig A5
 
 #define ENA 11
 #define ENB 6

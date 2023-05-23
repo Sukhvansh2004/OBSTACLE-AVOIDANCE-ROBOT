@@ -86,7 +86,7 @@ void forward(int voltage,int distance=0){
 
 void right(int voltage,int angle=0){
   analogWrite(ENA,ratio*voltage);
-  analogWrite(ENB,ratio*voltage);
+  analogWrite(ENB,voltage);
   int t=angle/omega(voltage);
   
   digitalWrite(IN_A_1,HIGH);
@@ -131,7 +131,7 @@ void setup() {
   pinMode(IN_B_2,OUTPUT);
   
 }
-
+  
 int offx=100;
 int offy=100;
 
@@ -144,10 +144,10 @@ void dist_update(int distance){
     offy=offy-distance;
   }
   else if(state==2){
-    offx=offx+distance;
+    offx=offx-distance;
   }
   else if(state==3){
-    offx=offx-distance;
+    offx=offx+distance;
   }
   else{
     offy=offy+distance;
@@ -204,11 +204,11 @@ bool traceback(){
   }
   else if(offx>15 || offx<-15){
     if(offx>0){
-      change_to_dir(3);
+      change_to_dir(2);
       return true;
     }
     else{
-      change_to_dir(2);
+      change_to_dir(3);
       return true;
     }
   }
@@ -297,7 +297,7 @@ void loop() {
     else if(df<fd){
       backward(255,7);
       update_dir(3);
-      dist_update(10);
+      dist_update(7);
       update_dir(3);
       int flag1=0;
       int flag2=0;
@@ -310,7 +310,7 @@ void loop() {
           if(dl>dr){
             left(255);
             delay(dt);
-            angleoff=angleoff+omega(100)*dt;
+            angleoff=angleoff+omega(255)*dt;
             flag1=1;
             if(flag2==1){
               firstIter=0;
