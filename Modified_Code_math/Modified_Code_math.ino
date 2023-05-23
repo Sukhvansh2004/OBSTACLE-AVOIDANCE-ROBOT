@@ -1,22 +1,22 @@
 #include <NewPing.h>
 
-#define sensor_f_echo A1
-#define sensor_f_trig A2
+#define sensor_f_echo 13
+#define sensor_f_trig 12
 
-#define sensor_r_echo A3
-#define sensor_r_trig A4
+#define sensor_r_echo 8
+#define sensor_r_trig 7
 
-#define sensor_l_echo A5
-#define sensor_l_trig A0
+#define sensor_l_echo 2
+#define sensor_l_trig 4
 
 #define ENA 11
-#define ENB 6
+#define ENB 3
 
 #define IN_A_1 10
 #define IN_A_2 9
 
-#define IN_B_1 8
-#define IN_B_2 7
+#define IN_B_1 6
+#define IN_B_2 5
 
 int rd=15;
 int ld=15;
@@ -348,7 +348,7 @@ void loop() {
       forward(255,10);
       dist_update(10);
       angleoff=0;
-      runner=traceback();
+    //  runner=traceback();
     }
   }
 }
