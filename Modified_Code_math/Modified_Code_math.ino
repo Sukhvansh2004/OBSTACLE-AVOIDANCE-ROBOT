@@ -18,9 +18,9 @@
 #define IN_B_1 6
 #define IN_B_2 5
 
-int rd=15;
-int ld=15;
-int fd=20;
+int rd=10;
+int ld=10;
+int fd=15;
 int dt=10;
 
 int MAX_DISTANCE=200;
@@ -50,10 +50,10 @@ void stationary(){
   digitalWrite(IN_B_2,LOW);
 }
 
-void backward(int voltage,int distance=0){
+void backward(int voltage,float distance=0){
   analogWrite(ENA,ratio*voltage);
   analogWrite(ENB,voltage);
-  int t=distance/vel(voltage);
+  float t=distance/vel(voltage);
   
   digitalWrite(IN_A_1,HIGH);
   digitalWrite(IN_A_2,LOW);
@@ -67,10 +67,10 @@ void backward(int voltage,int distance=0){
   }
 }
 
-void forward(int voltage,int distance=0){
+void forward(int voltage,float distance=0){
   analogWrite(ENA,ratio*voltage);
   analogWrite(ENB,voltage);
-  int t=distance/vel(voltage);
+  float t=distance/vel(voltage);
   
   digitalWrite(IN_A_1,LOW);
   digitalWrite(IN_A_2,HIGH);
@@ -84,10 +84,10 @@ void forward(int voltage,int distance=0){
   }
 }
 
-void right(int voltage,int angle=0){
+void right(int voltage,float angle=0){
   analogWrite(ENA,ratio*voltage);
   analogWrite(ENB,voltage);
-  int t=angle/omega(voltage);
+  float t=angle/omega(voltage);
   
   digitalWrite(IN_A_1,HIGH);
   digitalWrite(IN_A_2,LOW);
@@ -102,10 +102,10 @@ void right(int voltage,int angle=0){
   
 }
 
-void left(int voltage,int angle=0){
+void left(int voltage,float angle=0){
   analogWrite(ENA,ratio*voltage);
   analogWrite(ENB,voltage);
-  int t=angle/omega(voltage);
+  float t=angle/omega(voltage);
   
   digitalWrite(IN_A_1,LOW);
   digitalWrite(IN_A_2,HIGH);
@@ -137,7 +137,7 @@ int offy=100;
 
 int state=1;
 int dir=0;
-int angleoff=0;
+float angleoff=0;
 
 void dist_update(int distance){
   if (state==1){
@@ -285,16 +285,8 @@ void loop() {
     int df=sonar_forward.ping_cm();
     int dr=sonar_right.ping_cm();
     int dl=sonar_left.ping_cm();
-  
-    if(dr<rd){
-      left(255,90-angleoff);
-      dir=1;
-    }
-    else if(dl<ld){
-      right(255,90+angleoff);
-      dir=2;
-    }
-    else if(df<fd){
+    
+    if(df<fd){
       backward(255,7);
       update_dir(3);
       dist_update(7);
@@ -342,6 +334,17 @@ void loop() {
         }
       }
     }
+    
+    else if(dl<ld){
+      right(255);
+      delay(dt);
+    }
+
+    if(dr<rd){
+      left(255);
+      delay(dt);
+    }
+    
     else{
       update_dir(dir);
       dir=0;

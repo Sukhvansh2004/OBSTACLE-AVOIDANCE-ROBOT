@@ -1,23 +1,18 @@
 #include <NewPing.h>
 
-#define sensor_l_echo 13
-#define sensor_l_trig 12
-
-#define sensor_f_echo 8
-#define sensor_f_trig 7
-
-#define sensor_r_echo 2
-#define sensor_r_trig 4
+#define sensor_l_echo 12
+#define sensor_trig 13
+#define sensor_f_echo 2
+#define sensor_r_echo 4
 
 #define ENA 11
-#define ENB 3
+#define ENB 6
 
 #define IN_A_1 10
 #define IN_A_2 9
 
-#define IN_B_1 6
-#define IN_B_2 5
-
+#define IN_B_1 8 
+#define IN_B_2 7
 
 int rd=10;
 int ld=10;
@@ -28,10 +23,9 @@ int MAX_DISTANCE=500;
 int offset_x=0;
 int offset_y=100;
 
-
-NewPing sonar_left(sensor_l_trig, sensor_l_echo, MAX_DISTANCE);
-NewPing sonar_right(sensor_r_trig, sensor_r_echo, MAX_DISTANCE);
-NewPing sonar_forward(sensor_f_trig, sensor_f_echo, MAX_DISTANCE);
+NewPing sonar_left(sensor_trig, sensor_l_echo, MAX_DISTANCE);
+NewPing sonar_right(sensor_trig, sensor_r_echo, MAX_DISTANCE);
+NewPing sonar_forward(sensor_trig, sensor_f_echo, MAX_DISTANCE);
 
 void backward(){
   analogWrite(ENA,242);
