@@ -101,9 +101,49 @@ void setup() {
   pinMode(IN_B_2,OUTPUT);
   
 }
-int pointer=0;
 
+int p=0;
 void loop() {
-  forward();
-  delay(100);
+  int df=sonar_forward.ping_cm();
+  int dr=sonar_right.ping_cm();
+  int dl=sonar_left.ping_cm();
+  Serial.print(df);
+  Serial.print(" ");
+  Serial.print(dl);
+  Serial.print(" ");
+  Serial.print(dr);
+  Serial.println(" ");
+
+  if(df<fd && p++>15){
+    backward();
+    delay(300);
+    right();
+    delay(428);
+    int d1=sonar_right.ping_cm();
+    left();
+    delay(856);
+    int d2=sonar_left.ping_cm();
+    if(d1>d2){
+      right();
+      delay(1284);
+    }
+    else{
+      left();
+      delay(428); 
+    }
+  }
+  else if(dr<rd){
+    left();
+    delay(dt);
+    p=0;
+  }
+  else if(dl<ld){
+    right();
+    delay(dt);
+    p=0;
+  }
+  else{
+    forward();
+    delay(dt);
+  }
 }

@@ -19,12 +19,12 @@
 #define IN_B_2 5
 
 
-int rd=10;
-int ld=10;
-int fd=15;
+int rd=15;
+int ld=15;
+int fd=10;
 int dt=30;
 
-int MAX_DISTANCE=500;
+int MAX_DISTANCE=1000;
 int offset_x=0;
 int offset_y=100;
 
@@ -101,9 +101,47 @@ void setup() {
   pinMode(IN_B_2,OUTPUT);
   
 }
-int pointer=0;
 
+int p=0;
 void loop() {
-  forward();
-  delay(100);
+  int df=sonar_forward.ping_cm();
+  int dr=sonar_right.ping_cm();
+  int dl=sonar_left.ping_cm();
+  Serial.print(df);
+  Serial.print(" ");
+  Serial.print(dl);
+  Serial.print(" ");
+  Serial.print(dr);
+  Serial.println(" ");
+
+  if(df<fd && p++>10){
+    if(dl<dr){
+      backward();
+      delay(300);
+      right();
+      delay(856);
+      
+    }
+    else{
+      backward();
+      delay(300);
+      left();
+      delay(856);
+    }
+    stationary();
+  }
+  else if(dr<rd){
+    left();
+    delay(dt);
+    p=0;
+  }
+  else if(dl<ld){
+    right();
+    delay(dt);
+    p=0;
+  }
+  else{
+    forward();
+    delay(dt);
+  }
 }
