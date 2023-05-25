@@ -27,10 +27,10 @@ float linearVelocity = 28.99 * 0.001;   // Linear velocity in cm/ms
 float angularVelocity = 105.07 * 0.001; // Angular velocity in degrees/ms
 
 // Define the coordinates of point A and point B
-float pointA_x = 0.0;  // x-coordinate of point A
-float pointA_y = 0.0;  // y-coordinate of point A
-float pointB_x = 1.0;  // x-coordinate of point B
-float pointB_y = 1.0;  // y-coordinate of point B
+float pointA_x = 1.0;  // x-coordinate of point A
+float pointA_y = 1.0;  // y-coordinate of point A
+float pointB_x = 10.0;  // x-coordinate of point B
+float pointB_y = 1000.0;  // y-coordinate of point B
 
 void backward(float distance=0) {
   analogWrite(ENA, 242);
@@ -116,7 +116,6 @@ void setup() {
 
 float currentHeading = atan2(pointA_y, pointA_x);
 float desiredHeading=0;
-float angleDifference=0;
 
 void loop() {
   // Read distance from front sensor
@@ -183,7 +182,7 @@ void loop() {
     // Calculate the angle between the current heading and the desired heading to point B
     desiredHeading = atan2(pointB_y-pointA_y, pointB_x-pointA_x);
 
-    angleDifference = desiredHeading - currentHeading;
+    float angleDifference = desiredHeading - currentHeading;
     
     // Normalize the angle difference to be within the range of -pi to pi
     if (angleDifference > PI) {
