@@ -27,7 +27,7 @@ float linearVelocity = 28.99 * 0.001;   // Linear velocity in cm/ms
 float angularVelocity = 105.07 * 0.001; // Angular velocity in degrees/ms
 
 // Define the coordinates of point A and point B
-float pointA_x = 1.0;  // x-coordinate of point A
+float pointA_x = 0.0;  // x-coordinate of point A
 float pointA_y = 1.0;  // y-coordinate of point A
 float pointB_x = 10.0;  // x-coordinate of point B
 float pointB_y = 1000.0;  // y-coordinate of point B
@@ -115,7 +115,6 @@ void setup() {
 }
 
 float currentHeading = atan2(pointA_y, pointA_x);
-float desiredHeading=0;
 
 void loop() {
   // Read distance from front sensor
@@ -142,14 +141,8 @@ void loop() {
     if (rightDistance > 0 && rightDistance <= 20) {
       // If obstacles are detected in both front and right, move backward and turn left
       backward(12.5);
-      if(abs(angleDifference)>0.05){
-        pointA_x -= 12.5 * cos(currentHeading);
-        pointA_y -= 12.5 * sin(currentHeading);
-      }
-      else{
-        pointA_x -= 12.5 * cos(currentHeading);
-        pointA_y -= 12.5 * sin(currentHeading);
-      }
+      pointA_x -= 12.5 * cos(currentHeading);
+      pointA_y -= 12.5 * sin(currentHeading);
       left(52.5);
       currentHeading+=9.16;
     } else {
@@ -180,7 +173,7 @@ void loop() {
     pointA_y += 10 * sin(currentHeading);
     
     // Calculate the angle between the current heading and the desired heading to point B
-    desiredHeading = atan2(pointB_y-pointA_y, pointB_x-pointA_x);
+    float desiredHeading = atan2(pointB_y-pointA_y, pointB_x-pointA_x);
 
     float angleDifference = desiredHeading - currentHeading;
     
