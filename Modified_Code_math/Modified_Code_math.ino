@@ -1,13 +1,10 @@
 #include <NewPing.h>
 
-#define sensor_f_echo 13
-#define sensor_f_trig 12
+#define sensor_trig 13
 
-#define sensor_r_echo 8
-#define sensor_r_trig 7
-
-#define sensor_l_echo 2
-#define sensor_l_trig 4
+#define sensor_l_echo 7
+#define sensor_f_echo 2
+#define sensor_r_echo 12
 
 #define ENA 11
 #define ENB 3
@@ -15,23 +12,24 @@
 #define IN_A_1 10
 #define IN_A_2 9
 
-#define IN_B_1 6
+#define IN_B_1 6 
 #define IN_B_2 5
+
 
 int rd=10;
 int ld=10;
 int fd=15;
-int dt=10;
+int dt=15;
 
-int MAX_DISTANCE=200;
+int MAX_DISTANCE=500;
 int offset_x=0;
 int offset_y=100;
 
 float ratio=float(242)/float(255);
 
-NewPing sonar_left(sensor_l_trig, sensor_l_echo, MAX_DISTANCE);
-NewPing sonar_right(sensor_r_trig, sensor_r_echo, MAX_DISTANCE);
-NewPing sonar_forward(sensor_f_trig, sensor_f_echo, MAX_DISTANCE);
+NewPing sonar_left(sensor_trig, sensor_l_echo, MAX_DISTANCE);
+NewPing sonar_right(sensor_trig, sensor_r_echo, MAX_DISTANCE);
+NewPing sonar_forward(sensor_trig, sensor_f_echo, MAX_DISTANCE);
 
 float vel(int reading){
   return 28.99*(0.001);
@@ -120,7 +118,7 @@ void left(int voltage,float angle=0){
 }
 
 void setup() {
-
+  Serial.begin(9600);
   pinMode(ENA,OUTPUT);
   pinMode(ENB,OUTPUT);
 
@@ -280,13 +278,20 @@ void change_to_dir(int dir){
   }
 }
 
+int p=0;
+float time_stamp=millis();
 void loop() {
   while(runner){
     int df=sonar_forward.ping_cm();
     int dr=sonar_right.ping_cm();
     int dl=sonar_left.ping_cm();
-    
-    if(df<fd){
+    Serial.print(df);
+    Serial.print(" ");
+    Serial.print(dr);
+    Serial.print(" ");
+    Serial.println(dl);
+    Serial.println(p);
+    if(df<fd && p++>8){
       backward(255,7);
       update_dir(3);
       dist_update(7);
@@ -348,10 +353,15 @@ void loop() {
     else{
       update_dir(dir);
       dir=0;
-      forward(255,10);
+      forward(255);
+      delay(dt);
       dist_update(10);
       angleoff=0;
     //  runner=traceback();
+      if(millis()-time_stamp>1000){
+      p=0;
+      time_stamp=millis();
+      }
     }
   }
 }

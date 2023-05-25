@@ -1,28 +1,39 @@
-#define sensor_l_echo 12
+#include <NewPing.h>
+
 #define sensor_trig 13
+
+#define sensor_l_echo 7
 #define sensor_f_echo 2
-#define sensor_r_echo 4
+#define sensor_r_echo 12
 
 #define ENA 11
-#define ENB 6
+#define ENB 3
 
 #define IN_A_1 10
 #define IN_A_2 9
 
-#define IN_B_1 8 
-#define IN_B_2 7
+#define IN_B_1 6 
+#define IN_B_2 5
 
-
-int rd=15;
-int ld=15;
-int fd=10;
-int dt=30;
+int rd=20;
+int ld=20;
+int fd=20;
+int dt=15;
 
 int offset_x=0;
 int offset_y=100;
+int MAX_DISTANCE=500;
+
+float vel=28.99*(0.001);
+float omega=105.07*(0.001);
 
 
-int reading(trigPin,echoPin) {
+NewPing sonar_left(sensor_trig, sensor_l_echo, MAX_DISTANCE);
+NewPing sonar_right(sensor_trig, sensor_r_echo, MAX_DISTANCE);
+NewPing sonar_forward(sensor_trig, sensor_f_echo, MAX_DISTANCE);
+
+
+int reading(int trigPin,int echoPin) {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
 
@@ -37,7 +48,7 @@ int reading(trigPin,echoPin) {
   return distance_cm;  
 }
 
-void backward(){
+void backward(float distance=0){
   analogWrite(ENA,242);
   analogWrite(ENB,255);
   
@@ -47,9 +58,13 @@ void backward(){
   digitalWrite(IN_B_1,HIGH);
   digitalWrite(IN_B_2,LOW);
 
+  if(distance!=0){
+    delay(distance/vel);
+  }
+
 }
 
-void forward(){
+void forward(float distance=0){
   analogWrite(ENA,242);
   analogWrite(ENB,255);
   
@@ -59,9 +74,12 @@ void forward(){
   digitalWrite(IN_B_1,LOW);
   digitalWrite(IN_B_2,HIGH);
 
+  if(distance!=0){
+    delay(distance/vel);
+  }
 }
 
-void right(){
+void right(float angle=0){
   analogWrite(ENA,242);
   analogWrite(ENB,255);
   
@@ -70,9 +88,13 @@ void right(){
 
   digitalWrite(IN_B_1,LOW);
   digitalWrite(IN_B_2,HIGH);
+
+  if(angle!=0){
+    delay(angle/omega);
+  }
 }
 
-void left(){
+void left(float angle=0){
   analogWrite(ENA,242);
   analogWrite(ENB,255);
   
@@ -81,6 +103,11 @@ void left(){
 
   digitalWrite(IN_B_1,HIGH);
   digitalWrite(IN_B_2,LOW);
+
+  
+  if(angle!=0){
+    delay(angle/omega);
+  }
 }
 
 void stationary(){
@@ -110,43 +137,36 @@ void setup() {
   
 }
 
-int p=0;
 void loop() {
-  int df=reading(sensor_trig,sensor_f_echo);
-  int dr=reading(sensor_trig,sensor_r_echo);
-  int dl=reading(sensor_trig,sensor_l_echo);
+  int df=sonar_forward.ping_cm();
+  int dr=sonar_right.ping_cm();
+  int dl=sonar_left.ping_cm();
   Serial.print(df);
   Serial.print(" ");
   Serial.print(dl);
   Serial.print(" ");
   Serial.print(dr);
   Serial.println(" ");
+  Serial.println(f);
 
-  if(df<fd && p++>10){
+  if(df<fd){
     if(dl<dr){
-      backward();
-      delay(300);
-      right();
-      delay(856/2);
-      
+      backward(15);
+      right(52);
     }
     else{
-      backward();
-      delay(300);
-      left();
-      delay(856/2);
+      backward(15);
+      left(52);
     }
     stationary();
   }
   else if(dr<rd){
     left();
     delay(dt);
-    p=0;
   }
   else if(dl<ld){
     right();
     delay(dt);
-    p=0;
   }
   else{
     forward();
