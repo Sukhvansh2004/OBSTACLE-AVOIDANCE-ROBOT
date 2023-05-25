@@ -133,9 +133,17 @@ void loop() {
 
   // Obstacle detection and avoidance logic
   if (frontDistance > 0 && frontDistance <= 20) {
-    // If an obstacle is detected in front, turn right
-    right();
-    delay(500);
+    if (rightDistance > 0 && rightDistance <= 20) {
+      // If obstacles are detected in both front and right, move backward and turn left
+      backward();
+      delay(500);
+      left();
+      delay(500);
+    } else {
+      // If only an obstacle is detected in front, turn right
+      right();
+      delay(500);
+    }
   } else if (leftDistance > 0 && leftDistance <= 20) {
     // If an obstacle is detected on the left, turn right
     right();
