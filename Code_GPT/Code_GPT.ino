@@ -21,9 +21,9 @@
 #define ROBOT_LENGTH 30    // Length of the robot in cm
 
 // Ultrasonic sensor objects
-NewPing frontSensor(TRIGGER_PIN_FRONT, ECHO_PIN_FRONT, 500);  // Front sensor
-NewPing leftSensor(TRIGGER_PIN_LEFT, ECHO_PIN_LEFT, 500);      // Left sensor
-NewPing rightSensor(TRIGGER_PIN_RIGHT, ECHO_PIN_RIGHT, 500);   // Right sensor
+NewPing frontSensor(TRIGGER_PIN_FRONT, ECHO_PIN_FRONT, 400);  // Front sensor
+NewPing leftSensor(TRIGGER_PIN_LEFT, ECHO_PIN_LEFT, 400);      // Left sensor
+NewPing rightSensor(TRIGGER_PIN_RIGHT, ECHO_PIN_RIGHT, 400);   // Right sensor
 
 // Movement variables
 float vel = 28.99 * 0.001;   // Linear velocity in cm/ms

@@ -1,6 +1,6 @@
 #include <NewPing.h>  // Library for ultrasonic sensors
 
-#define VA 240
+#define VA 220
 #define VB 255
 // Pin definitions
 #define TRIGGER_PIN_FRONT 13  // Trigger pin for front sensor
@@ -131,29 +131,29 @@ void loop() {
   Serial.println(" cm");
 
   // Obstacle detection and avoidance logic
-  if (frontDistance > 0 && frontDistance <= 20) {
-    if (rightDistance > 0 && rightDistance <= 20) {
+  if (frontDistance > 0 && frontDistance <= 30) {
+    if (rightDistance > 0 && rightDistance <= 30) {
       // If obstacles are detected in both front and right, move backward and turn left
       backward(15);
       left(90);
-      forward(30);
+      forward(50);
       right(90);
     } else {
       // If only an obstacle is detected in front, turn right
       right(90);
-      forward(30);
+      forward(50);
       left(90);
     }
-  } else if (leftDistance > 0 && leftDistance <= 20) {
+  } else if (leftDistance > 0 && leftDistance <= 30) {
     // If an obstacle is detected on the left, turn right
       right(60);
-      forward(30);
+      forward(50);
       left(60);
       Serial.println("L");
-  } else if (rightDistance > 0 && rightDistance <= 20) {
+  } else if (rightDistance > 0 && rightDistance <= 30) {
     // If an obstacle is detected on the right, turn left
       left(60);
-      forward(30);
+      forward(50);
       right(60);
       Serial.println("R");
   } else {

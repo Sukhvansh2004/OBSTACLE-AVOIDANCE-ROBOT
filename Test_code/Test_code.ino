@@ -1,6 +1,6 @@
 #include <NewPing.h>  // Library for ultrasonic sensors
 
-#define VA 242
+#define VA 220
 #define VB 255
 // Pin definitions
 #define TRIGGER_PIN_FRONT 13  // Trigger pin for front sensor
@@ -180,6 +180,6 @@ void loop() {
   Serial.print(rightDistance);
   Serial.println(" cm");
 
-  left();
+  forward();
   delay(10);
 }

@@ -32,7 +32,7 @@ float angularVelocity = 105.07 * 0.001; // Angular velocity in degrees/ms
 float pointA_x = 0.0;  // x-coordinate of point A
 float pointA_y = 1.0;  // y-coordinate of point A
 float pointB_x = 0.0;  // x-coordinate of point B
-float pointB_y = 200.0;  // y-coordinate of point B
+float pointB_y = 400.0;  // y-coordinate of point B
 
 
 void backward(float distance=0) {
