@@ -11,12 +11,12 @@
 #define IN_A_1 10        // Motor A input 1
 #define IN_A_2 9        // Motor A input 2
 #define ENB 3         // Motor B enable pin
-#define IN_B_1 6         // Motor B input 3
-#define IN_B_2 5         // Motor B input 4
+#define IN_B_1 5         // Motor B input 3
+#define IN_B_2 6         // Motor B input 4
 
 // Robot dimensions
-#define ROBOT_WIDTH 30       // Width of the robot in cm
-#define ROBOT_LENGTH 22.5    // Length of the robot in cm
+#define ROBOT_WIDTH 22.5       // Width of the robot in cm
+#define ROBOT_LENGTH 30    // Length of the robot in cm
 
 // Ultrasonic sensor objects
 NewPing frontSensor(TRIGGER_PIN_FRONT, ECHO_PIN_FRONT, 500);  // Front sensor
@@ -29,8 +29,8 @@ float angularVelocity = 105.07 * 0.001; // Angular velocity in degrees/ms
 // Define the coordinates of point A and point B
 float pointA_x = 0.0;  // x-coordinate of point A
 float pointA_y = 1.0;  // y-coordinate of point A
-float pointB_x = 10.0;  // x-coordinate of point B
-float pointB_y = 1000.0;  // y-coordinate of point B
+float pointB_x = 0.0;  // x-coordinate of point B
+float pointB_y = 200.0;  // y-coordinate of point B
 
 void backward(float distance=0) {
   analogWrite(ENA, 242);
@@ -135,7 +135,10 @@ void loop() {
 
   // Calculate the distance to point B
   float distanceToB = sqrt(pow((pointB_x - pointA_x), 2) + pow((pointB_y - pointA_y), 2));
-
+  Serial.print("Distance :");
+  Serial.println(distanceToB);
+  Serial.print("Direction: ");
+  Serial.println(currentHeading);
   // Obstacle detection and avoidance logic
   if (frontDistance > 0 && frontDistance <= 20) {
     if (rightDistance > 0 && rightDistance <= 20) {
@@ -144,20 +147,20 @@ void loop() {
       pointA_x -= 12.5 * cos(currentHeading);
       pointA_y -= 12.5 * sin(currentHeading);
       left(52.5);
-      currentHeading+=9.16;
+      currentHeading+=0.916;
     } else {
       // If only an obstacle is detected in front, turn right
       right(52.5);
-      currentHeading-=9.16;
+      currentHeading-=0.916;
     }
   } else if (rightDistance > 0 && rightDistance <= 20) {
     // If only an obstacle is detected on the right, turn left
       left(52.5);
-      currentHeading+=9.16;
+      currentHeading+=0.916;
   } else if (leftDistance > 0 && leftDistance <= 20) {
     // If an obstacle is detected on the left, turn right
     right(52.5);
-    currentHeading-=9.16;
+    currentHeading-=0.916;
   } else {
     // Check if the robot has reached point B
     if (distanceToB <= 5) {
@@ -171,7 +174,17 @@ void loop() {
       
     pointA_x += 10 * cos(currentHeading);
     pointA_y += 10 * sin(currentHeading);
-    
+
+    while(true){
+      if (currentHeading > PI) {
+        currentHeading -= 2 * PI;
+      } else if (currentHeading < -PI) {
+        currentHeading += 2 * PI;
+      }
+      else{
+        break;
+      }
+    }
     // Calculate the angle between the current heading and the desired heading to point B
     float desiredHeading = atan2(pointB_y-pointA_y, pointB_x-pointA_x);
 
@@ -185,16 +198,16 @@ void loop() {
     }
 
     // Adjust the robot's heading based on the angle difference
-    if (abs(angleDifference) > 0.05) {
+    if (abs(angleDifference) > 0.5) {
       // If the angle difference is significant, perform a rotation
       if (angleDifference > 0) {
         // Rotate clockwise
-        right(abs(angleDifference));
-        currentHeading-=abs(angleDifference);
+        left(abs(angleDifference*180/PI));
+        currentHeading+=abs(angleDifference);
       } else {
         // Rotate counterclockwise
-        left(abs(angleDifference));
-        currentHeading+=abs(angleDifference);
+        right(abs(angleDifference*180/PI));
+        currentHeading-=abs(angleDifference);
         }
       }
     }

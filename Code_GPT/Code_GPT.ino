@@ -1,22 +1,24 @@
 #include <NewPing.h>  // Library for ultrasonic sensors
 
+#define VA 242
+#define VB 255
 // Pin definitions
 #define TRIGGER_PIN_FRONT 13  // Trigger pin for front sensor
 #define ECHO_PIN_FRONT 2     // Echo pin for front sensor
 #define TRIGGER_PIN_LEFT 13   // Trigger pin for left sensor
-#define ECHO_PIN_LEFT 7      // Echo pin for left sensor
+#define ECHO_PIN_LEFT 12      // Echo pin for left sensor
 #define TRIGGER_PIN_RIGHT 13  // Trigger pin for right sensor
-#define ECHO_PIN_RIGHT 12     // Echo pin for right sensor
+#define ECHO_PIN_RIGHT 7     // Echo pin for right sensor
 #define ENA 11         // Motor A enable pin
 #define IN_A_1 10        // Motor A input 1
 #define IN_A_2 9        // Motor A input 2
 #define ENB 3         // Motor B enable pin
-#define IN_B_1 6         // Motor B input 3
-#define IN_B_2 5         // Motor B input 4
+#define IN_B_1 5         // Motor B input 3
+#define IN_B_2 6         // Motor B input 4
 
 // Robot dimensions
-#define ROBOT_WIDTH 30       // Width of the robot in cm
-#define ROBOT_LENGTH 22.5    // Length of the robot in cm
+#define ROBOT_WIDTH 22.5       // Width of the robot in cm
+#define ROBOT_LENGTH 30    // Length of the robot in cm
 
 // Ultrasonic sensor objects
 NewPing frontSensor(TRIGGER_PIN_FRONT, ECHO_PIN_FRONT, 500);  // Front sensor
@@ -29,8 +31,8 @@ float omega = 105.07 * 0.001; // Angular velocity in degrees/ms
 
 
 void backward(float distance=0){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
+  analogWrite(ENA,VA);
+  analogWrite(ENB,VB);
   
   digitalWrite(IN_A_1,HIGH);
   digitalWrite(IN_A_2,LOW);
@@ -45,8 +47,8 @@ void backward(float distance=0){
 }
 
 void forward(float distance=0){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
+  analogWrite(ENA,VA);
+  analogWrite(ENB,VB);
   
   digitalWrite(IN_A_1,LOW);
   digitalWrite(IN_A_2,HIGH);
@@ -60,8 +62,8 @@ void forward(float distance=0){
 }
 
 void right(float angle=0){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
+  analogWrite(ENA,VA);
+  analogWrite(ENB,VB);
   
   digitalWrite(IN_A_1,HIGH);
   digitalWrite(IN_A_2,LOW);
@@ -75,8 +77,8 @@ void right(float angle=0){
 }
 
 void left(float angle=0){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
+  analogWrite(ENA,VA);
+  analogWrite(ENB,VB);
   
   digitalWrite(IN_A_1,LOW);
   digitalWrite(IN_A_2,HIGH);

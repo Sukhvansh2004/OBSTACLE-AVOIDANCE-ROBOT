@@ -6,9 +6,9 @@
 #define TRIGGER_PIN_FRONT 13  // Trigger pin for front sensor
 #define ECHO_PIN_FRONT 2     // Echo pin for front sensor
 #define TRIGGER_PIN_LEFT 13   // Trigger pin for left sensor
-#define ECHO_PIN_LEFT 7      // Echo pin for left sensor
+#define ECHO_PIN_LEFT 12      // Echo pin for left sensor
 #define TRIGGER_PIN_RIGHT 13  // Trigger pin for right sensor
-#define ECHO_PIN_RIGHT 12     // Echo pin for right sensor
+#define ECHO_PIN_RIGHT 7     // Echo pin for right sensor
 #define ENA 11         // Motor A enable pin
 #define IN_A_1 10        // Motor A input 1
 #define IN_A_2 9        // Motor A input 2
@@ -180,6 +180,40 @@ void loop() {
   Serial.print(rightDistance);
   Serial.println(" cm");
 
-  left();
-  delay(10);
+  // Obstacle detection and avoidance logic
+  if (frontDistance > 0 && frontDistance <= 20) {
+    if (rightDistance > 0 && rightDistance <= 20) {
+      // If obstacles are detected in both front and right, move backward and turn left
+      backward(12.5);
+      pointA_x -= 12.5 * cos(currentHeading);
+      pointA_y -= 12.5 * sin(currentHeading);
+      left(90);
+      currentHeading+=PI/2;
+    } else {
+      // If only an obstacle is detected in front, turn right
+      right(90);
+      currentHeading-=PI/2;
+    }
+  } else if (rightDistance > 0 && rightDistance <= 20) {
+    // If only an obstacle is detected on the right, turn left
+      left(90);
+      currentHeading+=PI/2;
+  } else if (leftDistance > 0 && leftDistance <= 20) {
+    // If an obstacle is detected on the left, turn right
+    right(90);
+    currentHeading-=PI/2;
+  }
+  else{
+    while(true){
+      if (currentHeading > PI) {
+        currentHeading -= 2 * PI;
+      } else if (currentHeading < -PI) {
+        currentHeading += 2 * PI;
+      }
+      else{
+        break;
+      }
+    }
+    navigateToDestination(pointB_x,pointB_y);
+  }
 }

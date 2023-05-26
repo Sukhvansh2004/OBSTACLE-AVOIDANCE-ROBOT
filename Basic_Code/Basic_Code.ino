@@ -1,103 +1,163 @@
-#include <NewPing.h>
+#include <NewPing.h>  // Library for ultrasonic sensors
 
-#define sensor_l_echo 12
-#define sensor_trig 13
-#define sensor_f_echo 2
-#define sensor_r_echo 4
+#define VA 240
+#define VB 255
+// Pin definitions
+#define TRIGGER_PIN_FRONT 13  // Trigger pin for front sensor
+#define ECHO_PIN_FRONT 2     // Echo pin for front sensor
+#define TRIGGER_PIN_LEFT 13   // Trigger pin for left sensor
+#define ECHO_PIN_LEFT 12      // Echo pin for left sensor
+#define TRIGGER_PIN_RIGHT 13  // Trigger pin for right sensor
+#define ECHO_PIN_RIGHT 7     // Echo pin for right sensor
+#define ENA 11         // Motor A enable pin
+#define IN_A_1 10        // Motor A input 1
+#define IN_A_2 9        // Motor A input 2
+#define ENB 3         // Motor B enable pin
+#define IN_B_1 5         // Motor B input 3
+#define IN_B_2 6         // Motor B input 4
 
-#define ENA 11
-#define ENB 6
+// Robot dimensions
+#define ROBOT_WIDTH 22.5       // Width of the robot in cm
+#define ROBOT_LENGTH 30    // Length of the robot in cm
 
-#define IN_A_1 10
-#define IN_A_2 9
+// Ultrasonic sensor objects
+NewPing frontSensor(TRIGGER_PIN_FRONT, ECHO_PIN_FRONT, 500);  // Front sensor
+NewPing leftSensor(TRIGGER_PIN_LEFT, ECHO_PIN_LEFT, 500);      // Left sensor
+NewPing rightSensor(TRIGGER_PIN_RIGHT, ECHO_PIN_RIGHT, 500);   // Right sensor
 
-#define IN_B_1 8 
-#define IN_B_2 7
+// Movement variables
+float linearVelocity = 28.99 * 0.001;   // Linear velocity in cm/ms
+float angularVelocity = 105.07 * 0.001; // Angular velocity in degrees/ms
 
-int rd=10;
-int ld=10;
-int fd=15;
-int dt=30;
 
-int MAX_DISTANCE=500;
-int offset_x=0;
-int offset_y=100;
+void backward(float distance=0) {
+  analogWrite(ENA, VA);
+  analogWrite(ENB, VB);
 
-NewPing sonar_left(sensor_trig, sensor_l_echo, MAX_DISTANCE);
-NewPing sonar_right(sensor_trig, sensor_r_echo, MAX_DISTANCE);
-NewPing sonar_forward(sensor_trig, sensor_f_echo, MAX_DISTANCE);
+  digitalWrite(IN_A_1, HIGH);
+  digitalWrite(IN_A_2, LOW);
 
-void backward(){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
-  
-  digitalWrite(IN_A_1,HIGH);
-  digitalWrite(IN_A_2,LOW);
+  digitalWrite(IN_B_1, HIGH);
+  digitalWrite(IN_B_2, LOW);
 
-  digitalWrite(IN_B_1,HIGH);
-  digitalWrite(IN_B_2,LOW);
-
+  if(distance!=0){
+    delay(distance/linearVelocity);
+  }
 }
 
-void forward(){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
-  
-  digitalWrite(IN_A_1,LOW);
-  digitalWrite(IN_A_2,HIGH);
+void forward(float distance=0) {
+  analogWrite(ENA, VA);
+  analogWrite(ENB, VB);
 
-  digitalWrite(IN_B_1,LOW);
-  digitalWrite(IN_B_2,HIGH);
+  digitalWrite(IN_A_1, LOW);
+  digitalWrite(IN_A_2, HIGH);
 
+  digitalWrite(IN_B_1, LOW);
+  digitalWrite(IN_B_2, HIGH);
+
+  if(distance!=0){
+    delay(distance/linearVelocity);
+  }
 }
 
-void right(){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
-  
-  digitalWrite(IN_A_1,HIGH);
-  digitalWrite(IN_A_2,LOW);
+void right(float angle=0) {
+  analogWrite(ENA, VA);
+  analogWrite(ENB, VB);
 
-  digitalWrite(IN_B_1,LOW);
-  digitalWrite(IN_B_2,HIGH);
+  digitalWrite(IN_A_1, HIGH);
+  digitalWrite(IN_A_2, LOW);
+
+  digitalWrite(IN_B_1, LOW);
+  digitalWrite(IN_B_2, HIGH);
+
+  if(angle!=0){
+    delay(angle/angularVelocity);
+  }
 }
 
-void left(){
-  analogWrite(ENA,242);
-  analogWrite(ENB,255);
-  
-  digitalWrite(IN_A_1,LOW);
-  digitalWrite(IN_A_2,HIGH);
+void left(float angle=0) {
+  analogWrite(ENA, VA);
+  analogWrite(ENB, VB);
 
-  digitalWrite(IN_B_1,HIGH);
-  digitalWrite(IN_B_2,LOW);
+  digitalWrite(IN_A_1, LOW);
+  digitalWrite(IN_A_2, HIGH);
+
+  digitalWrite(IN_B_1, HIGH);
+  digitalWrite(IN_B_2, LOW);
+
+  if(angle!=0){
+    delay(angle/angularVelocity);
+  }
 }
 
-void stationary(){
-  
-  digitalWrite(IN_A_1,LOW);
-  digitalWrite(IN_A_2,LOW);
+void stationary() {
+  digitalWrite(IN_A_1, LOW);
+  digitalWrite(IN_A_2, LOW);
 
-  digitalWrite(IN_B_1,LOW);
-  digitalWrite(IN_B_2,LOW);
+  digitalWrite(IN_B_1, LOW);
+  digitalWrite(IN_B_2, LOW);
 }
+
+
 void setup() {
-
+  // Initialize serial communication
   Serial.begin(9600);
-  
-  pinMode(ENA,OUTPUT);
-  pinMode(ENB,OUTPUT);
 
-  pinMode(IN_A_1,OUTPUT);
-  pinMode(IN_A_2,OUTPUT);
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
 
-  pinMode(IN_B_1,OUTPUT);
-  pinMode(IN_B_2,OUTPUT);
-  
+  pinMode(IN_A_1, OUTPUT);
+  pinMode(IN_A_2, OUTPUT);
+
+  pinMode(IN_B_1, OUTPUT);
+  pinMode(IN_B_2, OUTPUT);
 }
-int pointer=0;
 
 void loop() {
-  forward();
-  delay(100);
+  // Read distance from front sensor
+  int frontDistance = frontSensor.ping_cm();
+
+  // Read distances from left and right sensors
+  int leftDistance = leftSensor.ping_cm();
+  int rightDistance = rightSensor.ping_cm();
+
+  // Print sensor readings
+  Serial.print("Front: ");
+  Serial.print(frontDistance);
+  Serial.print(" cm, Left: ");
+  Serial.print(leftDistance);
+  Serial.print(" cm, Right: ");
+  Serial.print(rightDistance);
+  Serial.println(" cm");
+
+  // Obstacle detection and avoidance logic
+  if (frontDistance > 0 && frontDistance <= 20) {
+    if (rightDistance > 0 && rightDistance <= 20) {
+      // If obstacles are detected in both front and right, move backward and turn left
+      backward(15);
+      left(90);
+      forward(30);
+      right(90);
+    } else {
+      // If only an obstacle is detected in front, turn right
+      right(90);
+      forward(30);
+      left(90);
+    }
+  } else if (leftDistance > 0 && leftDistance <= 20) {
+    // If an obstacle is detected on the left, turn right
+      right(60);
+      forward(30);
+      left(60);
+      Serial.println("L");
+  } else if (rightDistance > 0 && rightDistance <= 20) {
+    // If an obstacle is detected on the right, turn left
+      left(60);
+      forward(30);
+      right(60);
+      Serial.println("R");
+  } else {
+    // No obstacles detected, move forward
+    forward();
+  }
 }
