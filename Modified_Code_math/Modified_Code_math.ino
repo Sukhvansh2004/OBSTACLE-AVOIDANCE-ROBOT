@@ -357,7 +357,7 @@ void loop() {
       delay(dt);
       dist_update(10);
       angleoff=0;
-    //  runner=traceback();
+      runner=traceback();
       if(millis()-time_stamp>1000){
       p=0;
       time_stamp=millis();
