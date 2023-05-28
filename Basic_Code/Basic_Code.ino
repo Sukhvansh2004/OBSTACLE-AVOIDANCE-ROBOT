@@ -136,24 +136,24 @@ void loop() {
       // If obstacles are detected in both front and right, move backward and turn left
       backward(15);
       left(90);
-      forward(45);
+      forward(50);
       right(90);
     } else {
       // If only an obstacle is detected in front, turn right
       right(90);
-      forward(45);
+      forward(50);
       left(90);
     }
   } else if (leftDistance > 0 && leftDistance <= 30) {
     // If an obstacle is detected on the left, turn right
       right(60);
-      forward(45);
+      forward(50);
       left(60);
       Serial.println("L");
   } else if (rightDistance > 0 && rightDistance <= 30) {
     // If an obstacle is detected on the right, turn left
       left(60);
-      forward(45);
+      forward(50);
       right(60);
       Serial.println("R");
   } else {

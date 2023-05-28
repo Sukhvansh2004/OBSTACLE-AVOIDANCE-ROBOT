@@ -136,18 +136,18 @@ void obstacle() {
       // If obstacles are detected in both front and right, move backward and turn left
       backward(15);
       left(90);
-      distance=45;
+      int distance=45;
       while(distance>=0){
-        obstacle(5);
+        obstacle();
         distance=distance-5;
       }
       right(90);
     } else {
       // If only an obstacle is detected in front, turn right
       right(90);
-      distance=45;
+      int distance=45;
       while(distance>=0){
-        obstacle(5);
+        obstacle();
         distance=distance-5;
       }
       left(90);
@@ -155,9 +155,9 @@ void obstacle() {
   } else if (leftDistance > 0 && leftDistance <= 30) {
     // If an obstacle is detected on the left, turn right
       right(60);
-      distance=45;
+      int distance=45;
       while(distance>=0){
-        obstacle(5);
+        obstacle();
         distance=distance-5;
       }
       left(60);
@@ -165,9 +165,9 @@ void obstacle() {
   } else if (rightDistance > 0 && rightDistance <= 30) {
     // If an obstacle is detected on the right, turn left
       left(60);
-      distance=45;
+      int distance=45;
       while(distance>=0){
-        obstacle(5);
+        obstacle();
         distance=distance-5;
       }
       right(60);
