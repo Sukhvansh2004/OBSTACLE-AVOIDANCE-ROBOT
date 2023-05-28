@@ -149,7 +149,7 @@ void navigateToDestination(float destinationX, float destinationY) {
   }
 
   // Adjust the robot's heading based on the angle difference
-  if (abs(angleDifference) > 0.5) {
+  if (abs(angleDifference) > 1) {
     // If the angle difference is significant, perform a rotation
     if (angleDifference > 0) {
       // Rotate clockwise
